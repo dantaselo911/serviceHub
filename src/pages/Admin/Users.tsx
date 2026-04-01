@@ -3,7 +3,7 @@ import { collection, onSnapshot, query, orderBy, limit, updateDoc, doc } from 'f
 import { db } from '../../firebase';
 import { UserProfile } from '../../types';
 import { Card, Input, Badge, Button } from '../../components/ui';
-import { Search, User, Mail, Shield, ShieldAlert, MoreVertical, X, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, User, Mail, Shield, ShieldAlert, MoreVertical, X, CheckCircle2, AlertCircle, Edit2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -13,6 +13,7 @@ export const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+  const [editingBalance, setEditingBalance] = useState<number | null>(null);
 
   useEffect(() => {
     const q = query(collection(db, 'users'), orderBy('createdAt', 'desc'), limit(100));
@@ -35,6 +36,19 @@ export const AdminUsers = () => {
         console.error(error);
         toast.error('Erro ao atualizar permissão.');
       }
+    }
+  };
+
+  const handleUpdateBalance = async (user: UserProfile, newBalance: number) => {
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        balance: newBalance
+      });
+      toast.success('Saldo atualizado com sucesso!');
+      setEditingBalance(null);
+    } catch (error) {
+      console.error(error);
+      toast.error('Erro ao atualizar saldo.');
     }
   };
 
@@ -71,6 +85,7 @@ export const AdminUsers = () => {
               <tr className="border-b border-zinc-800 text-zinc-400 text-sm">
                 <th className="pb-4 font-medium px-4">Usuário</th>
                 <th className="pb-4 font-medium px-4">Papel</th>
+                <th className="pb-4 font-medium px-4">Saldo</th>
                 <th className="pb-4 font-medium px-4">Cadastro</th>
                 <th className="pb-4 font-medium px-4 text-right">Ações</th>
               </tr>
@@ -108,6 +123,22 @@ export const AdminUsers = () => {
                       )}
                     </Badge>
                   </td>
+                  <td className="py-4 px-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-bold text-orange-500">R$ {(user.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setEditingBalance(user.balance || 0);
+                        }}
+                        className="p-1 h-auto text-zinc-500 hover:text-white"
+                      >
+                        <Edit2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </td>
                   <td className="py-4 px-4 text-sm text-zinc-500">
                     {user.createdAt ? format(user.createdAt.toDate(), "dd/MM/yyyy", { locale: ptBR }) : 'N/A'}
                   </td>
@@ -139,7 +170,50 @@ export const AdminUsers = () => {
         </div>
       </Card>
 
-      {selectedUser && (
+      {selectedUser && editingBalance !== null ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <Card className="w-full max-w-md p-6 bg-zinc-900 border-zinc-800">
+            <h2 className="text-xl font-bold text-white mb-6">Editar Saldo</h2>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3 p-3 bg-zinc-950 rounded-lg border border-zinc-800">
+                <img src={selectedUser.photoURL} className="w-10 h-10 rounded-full" />
+                <div>
+                  <div className="text-sm font-bold text-white">{selectedUser.displayName}</div>
+                  <div className="text-xs text-zinc-500">{selectedUser.email}</div>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-zinc-400">Novo Saldo (R$)</label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  value={editingBalance}
+                  onChange={(e) => setEditingBalance(parseFloat(e.target.value))}
+                  className="text-xl font-bold bg-zinc-950 border-zinc-800 text-white"
+                />
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <Button
+                  variant="ghost"
+                  className="flex-1"
+                  onClick={() => {
+                    setSelectedUser(null);
+                    setEditingBalance(null);
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  className="flex-1"
+                  onClick={() => handleUpdateBalance(selectedUser, editingBalance)}
+                >
+                  Salvar
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      ) : selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <Card className="w-full max-w-md p-6 bg-zinc-900 border-zinc-800">
             <div className="flex items-center justify-between mb-6">

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Card, Button, Input } from '../components/ui';
-import { User, Mail, Shield, Calendar, LogOut, Edit2, Save, X, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Shield, Calendar, LogOut, Edit2, Save, X, CheckCircle2, Wallet, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { toast } from 'sonner';
+import { Badge } from '../components/ui';
+import { Link } from 'react-router-dom';
 
 export const Profile = () => {
   const { user, signOut } = useAuth();
@@ -72,11 +74,21 @@ export const Profile = () => {
               <p className="text-zinc-500 text-sm">{user.email}</p>
             </div>
 
-            <Badge variant={user.role === 'admin' ? 'success' : 'secondary'} className="uppercase tracking-widest text-[10px]">
+            <Badge variant={user.role === 'admin' ? 'success' : 'default'} className="uppercase tracking-widest text-[10px]">
               {user.role === 'admin' ? 'Administrador' : 'Cliente Premium'}
             </Badge>
 
             <div className="pt-6 border-t border-zinc-800 space-y-4">
+              <div className="p-4 bg-zinc-950 rounded-xl border border-zinc-800 text-center">
+                <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Saldo em Conta</div>
+                <div className="text-2xl font-bold text-orange-500 mb-3">R$ {(user.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</div>
+                <Link to="/deposit">
+                  <Button variant="outline" size="sm" className="w-full">
+                    <Plus className="w-4 h-4 mr-2" /> Adicionar Saldo
+                  </Button>
+                </Link>
+              </div>
+
               <div className="flex items-center justify-between text-sm text-zinc-500">
                 <span className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
@@ -185,20 +197,5 @@ export const Profile = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-const Badge = ({ children, variant = 'secondary', className = '' }: { children: React.ReactNode, variant?: 'primary' | 'secondary' | 'success' | 'danger', className?: string }) => {
-  const variants = {
-    primary: 'bg-orange-500/10 text-orange-500 border-orange-500/20',
-    secondary: 'bg-zinc-800 text-zinc-400 border-zinc-700',
-    success: 'bg-green-500/10 text-green-500 border-green-500/20',
-    danger: 'bg-red-500/10 text-red-500 border-red-500/20',
-  };
-
-  return (
-    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${variants[variant]} ${className}`}>
-      {children}
-    </span>
   );
 };

@@ -10,6 +10,7 @@
         "displayName": { "type": "string" },
         "photoURL": { "type": "string" },
         "role": { "type": "string", "enum": ["client", "admin"] },
+        "balance": { "type": "number" },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["uid", "email", "role"]
@@ -99,6 +100,22 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "serviceId", "rating"]
+    },
+    "transactions": {
+      "title": "Transaction",
+      "description": "User balance transactions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["deposit", "payment", "refund", "adjustment"] },
+        "status": { "type": "string", "enum": ["pending", "completed", "failed"] },
+        "description": { "type": "string" },
+        "transactionId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "type", "status"]
     }
   },
   "firestore": {
@@ -107,6 +124,7 @@
     "/services/{serviceId}": { "schema": "services", "description": "Services" },
     "/orders/{orderId}": { "schema": "orders", "description": "Service orders" },
     "/quotes/{quoteId}": { "schema": "quotes", "description": "Quote requests" },
-    "/reviews/{reviewId}": { "schema": "reviews", "description": "Service reviews" }
+    "/reviews/{reviewId}": { "schema": "reviews", "description": "Service reviews" },
+    "/transactions/{transactionId}": { "schema": "transactions", "description": "Balance transactions" }
   }
 }

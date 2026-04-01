@@ -6,7 +6,10 @@ service cloud.firestore {
     // ===============================================================
     //
     // Collection: users
-    // Fields: uid, email, displayName, photoURL, role, createdAt
+    // Fields: uid, email, displayName, photoURL, role, balance, createdAt
+    //
+    // Collection: transactions
+    // Fields: id, userId, amount, type, status, description, transactionId, createdAt
     //
     // Collection: categories
     // Fields: id, name, icon, description, order
@@ -60,9 +63,17 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidUser(data) {
-      return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'photoURL', 'role', 'createdAt']) &&
+      return hasOnlyAllowedFields(['uid', 'email', 'displayName', 'photoURL', 'role', 'balance', 'createdAt']) &&
              data.uid is string && data.email is string && isValidEmail(data.email) &&
-             data.role in ['client', 'admin'];
+             data.role in ['client', 'admin'] &&
+             (data.balance is number || !('balance' in data));
+    }
+
+    function isValidTransaction(data) {
+      return hasRequiredFields(['userId', 'amount', 'type', 'status']) &&
+             data.userId is string && data.amount is number &&
+             data.type in ['deposit', 'payment', 'refund', 'adjustment'] &&
+             data.status in ['pending', 'completed', 'failed'];
     }
 
     function isValidCategory(data) {
@@ -101,8 +112,15 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'client' || isAdmin());
-      allow update: if isAuthenticated() && (isAdmin() || (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role));
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && (request.resource.data.role == 'client' || isAdmin()) && (!('balance' in request.resource.data) || request.resource.data.balance == 0);
+      allow update: if isAuthenticated() && (isAdmin() || (isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role && request.resource.data.balance == resource.data.balance));
+      allow delete: if isAdmin();
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() && (isAdmin() || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidTransaction(request.resource.data);
+      allow update: if isAdmin();
       allow delete: if isAdmin();
     }
 

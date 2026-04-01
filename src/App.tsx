@@ -7,6 +7,7 @@ import { Catalog } from './pages/Catalog';
 import { ServiceDetail } from './pages/ServiceDetail';
 import { MyOrders } from './pages/MyOrders';
 import { Profile } from './pages/Profile';
+import { Deposit } from './pages/Deposit';
 import { AdminLayout } from './pages/Admin/AdminLayout';
 import { AdminDashboard } from './pages/Admin/Dashboard';
 import { AdminServices } from './pages/Admin/Services';
@@ -142,6 +143,7 @@ export default function App() {
           {/* Protected Client Routes */}
           <Route path="/my-orders" element={<ProtectedRoute><Layout><MyOrders /></Layout></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+          <Route path="/deposit" element={<ProtectedRoute><Layout><Deposit /></Layout></ProtectedRoute>} />
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>

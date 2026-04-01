@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, db, signInWithGoogle, logout, onAuthStateChanged } from '../firebase';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { UserProfile, UserRole } from '../types';
 
 interface AuthContextType {
@@ -18,37 +18,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    let unsubscribeProfile: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+        // First check if user exists
+        const userRef = doc(db, 'users', firebaseUser.uid);
+        const userDoc = await getDoc(userRef);
         
-        if (userDoc.exists()) {
-          setUser(userDoc.data() as UserProfile);
-        } else {
+        if (!userDoc.exists()) {
           // Create new user profile
           const isDefaultAdmin = firebaseUser.email === 'dantaselo911@gmail.com';
-          const newUser: UserProfile = {
+          const newUser: Partial<UserProfile> = {
             uid: firebaseUser.uid,
             email: firebaseUser.email || '',
             displayName: firebaseUser.displayName || 'Usuário',
             photoURL: firebaseUser.photoURL || '',
             role: isDefaultAdmin ? 'admin' : 'client',
-            createdAt: new Date().toISOString(),
+            balance: 0,
+            createdAt: serverTimestamp(),
           };
           
-          await setDoc(doc(db, 'users', firebaseUser.uid), {
-            ...newUser,
-            createdAt: serverTimestamp(),
-          });
-          setUser(newUser);
+          await setDoc(userRef, newUser);
         }
+
+        // Listen for real-time updates to the profile (including balance)
+        unsubscribeProfile = onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            setUser({ ...doc.data(), uid: doc.id } as UserProfile);
+          }
+          setLoading(false);
+        });
       } else {
+        if (unsubscribeProfile) unsubscribeProfile();
         setUser(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeProfile) unsubscribeProfile();
+    };
   }, []);
 
   const login = async () => {

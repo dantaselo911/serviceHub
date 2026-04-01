@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui';
-import { Menu, X, User, LogOut, LayoutDashboard, Briefcase, FileText, Search, Bell } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Briefcase, FileText, Search, Bell, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { NotificationCenter } from '../NotificationCenter';
 
@@ -32,6 +32,13 @@ export const Navbar = () => {
             <Link to="/catalog" className="text-zinc-400 hover:text-white transition-colors">Serviços</Link>
             {user ? (
               <div className="flex items-center space-x-4">
+                <div className="bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1 flex items-center space-x-2">
+                  <span className="text-xs text-zinc-500 font-medium">Saldo:</span>
+                  <span className="text-sm text-orange-500 font-bold">R$ {(user.balance || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <Link to="/deposit" className="text-zinc-400 hover:text-white transition-colors">
+                    <Plus className="w-3 h-3" />
+                  </Link>
+                </div>
                 {isAdmin && (
                   <Link to="/admin" className="text-orange-500 hover:text-orange-400 font-medium flex items-center">
                     <LayoutDashboard className="w-4 h-4 mr-1" /> Painel Admin

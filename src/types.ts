@@ -6,7 +6,8 @@ export interface UserProfile {
   displayName: string;
   photoURL: string;
   role: UserRole;
-  createdAt: string;
+  balance: number;
+  createdAt: any;
 }
 
 export interface Category {
