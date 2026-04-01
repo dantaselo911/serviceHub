@@ -1,36 +1,213 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "MS Sans Serif", "Tahoma", "Arial", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Courier New", ui-monospace, monospace;
+
+  /* Windows 2000 Color Palette */
+  --color-win-bg: #d4d0c8;
+  --color-win-surface: #d4d0c8;
+  --color-win-titlebar: #000080;
+  --color-win-titlebar-inactive: #808080;
+  --color-win-titlebar-text: #ffffff;
+  --color-win-border-light: #ffffff;
+  --color-win-border-dark: #808080;
+  --color-win-border-darker: #404040;
+  --color-win-shadow: #000000;
+  --color-win-text: #000000;
+  --color-win-text-muted: #444444;
+  --color-win-blue: #000080;
+  --color-win-blue-hover: #1084d0;
+  --color-win-link: #0000ff;
+  --color-win-link-hover: #ff0000;
+  --color-win-highlight: #000080;
+  --color-win-highlight-text: #ffffff;
+  --color-win-button-face: #d4d0c8;
+  --color-win-orange: #ff6600;
+  --color-win-orange-dark: #cc4400;
+
+  /* Semantic tokens */
+  --color-background: var(--color-win-bg);
+  --color-foreground: var(--color-win-text);
+  --color-surface: var(--color-win-surface);
+  --color-border: var(--color-win-border-dark);
+  --color-accent: var(--color-win-orange);
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
-  @apply bg-black text-zinc-100 antialiased;
+  background-color: var(--color-win-bg);
+  color: var(--color-win-text);
+  font-family: "Tahoma", "Arial", sans-serif;
+  font-size: 11px;
 }
 
-/* Custom Scrollbar */
+/* Windows 2000 raised bevel */
+.win-raised {
+  border-top: 2px solid var(--color-win-border-light);
+  border-left: 2px solid var(--color-win-border-light);
+  border-right: 2px solid var(--color-win-border-darker);
+  border-bottom: 2px solid var(--color-win-border-darker);
+}
+
+/* Windows 2000 sunken bevel */
+.win-sunken {
+  border-top: 2px solid var(--color-win-border-darker);
+  border-left: 2px solid var(--color-win-border-darker);
+  border-right: 2px solid var(--color-win-border-light);
+  border-bottom: 2px solid var(--color-win-border-light);
+}
+
+/* Window/panel border */
+.win-panel {
+  background: var(--color-win-surface);
+  border-top: 2px solid var(--color-win-border-light);
+  border-left: 2px solid var(--color-win-border-light);
+  border-right: 2px solid var(--color-win-border-darker);
+  border-bottom: 2px solid var(--color-win-border-darker);
+}
+
+/* Title bar gradient */
+.win-titlebar {
+  background: linear-gradient(to right, #000080, #1084d0);
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Classic button */
+.win-btn {
+  background: var(--color-win-button-face);
+  color: var(--color-win-text);
+  border-top: 2px solid var(--color-win-border-light);
+  border-left: 2px solid var(--color-win-border-light);
+  border-right: 2px solid var(--color-win-border-darker);
+  border-bottom: 2px solid var(--color-win-border-darker);
+  padding: 3px 10px;
+  font-family: "Tahoma", Arial, sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.win-btn:active {
+  border-top: 2px solid var(--color-win-border-darker);
+  border-left: 2px solid var(--color-win-border-darker);
+  border-right: 2px solid var(--color-win-border-light);
+  border-bottom: 2px solid var(--color-win-border-light);
+  padding: 4px 9px 2px 11px;
+}
+
+.win-btn:hover {
+  background: #e4e0d8;
+}
+
+.win-btn:focus {
+  outline: 1px dotted var(--color-win-text);
+  outline-offset: -4px;
+}
+
+/* Primary button */
+.win-btn-primary {
+  background: var(--color-win-orange);
+  color: #ffffff;
+  border-top: 2px solid #ff9966;
+  border-left: 2px solid #ff9966;
+  border-right: 2px solid #882200;
+  border-bottom: 2px solid #882200;
+  font-weight: bold;
+}
+
+.win-btn-primary:hover {
+  background: var(--color-win-orange-dark);
+}
+
+/* Input field */
+.win-input {
+  background: #ffffff;
+  border-top: 2px solid var(--color-win-border-darker);
+  border-left: 2px solid var(--color-win-border-darker);
+  border-right: 2px solid var(--color-win-border-light);
+  border-bottom: 2px solid var(--color-win-border-light);
+  padding: 3px 6px;
+  font-family: "Tahoma", Arial, sans-serif;
+  font-size: 11px;
+  color: var(--color-win-text);
+}
+
+.win-input:focus {
+  outline: none;
+  border-color: var(--color-win-blue);
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 16px;
+  height: 16px;
 }
-
 ::-webkit-scrollbar-track {
-  @apply bg-black;
+  background: var(--color-win-bg);
+  border: 1px inset var(--color-win-border-dark);
 }
-
 ::-webkit-scrollbar-thumb {
-  @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+  background: var(--color-win-button-face);
+  border-top: 2px solid var(--color-win-border-light);
+  border-left: 2px solid var(--color-win-border-light);
+  border-right: 2px solid var(--color-win-border-darker);
+  border-bottom: 2px solid var(--color-win-border-darker);
+}
+::-webkit-scrollbar-button {
+  background: var(--color-win-button-face);
+  border-top: 2px solid var(--color-win-border-light);
+  border-left: 2px solid var(--color-win-border-light);
+  border-right: 2px solid var(--color-win-border-darker);
+  border-bottom: 2px solid var(--color-win-border-darker);
+  display: block;
+  height: 16px;
+  width: 16px;
 }
 
-/* Smooth Scroll */
+/* Link styles */
+a {
+  color: var(--color-win-link);
+  text-decoration: underline;
+}
+a:hover {
+  color: var(--color-win-link-hover);
+}
+
+/* Selection */
+::selection {
+  background: var(--color-win-highlight);
+  color: var(--color-win-highlight-text);
+}
+
+/* Status bar */
+.win-statusbar {
+  background: var(--color-win-surface);
+  border-top: 2px solid var(--color-win-border-darker);
+  padding: 2px 8px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Menu bar */
+.win-menubar {
+  background: var(--color-win-surface);
+  border-bottom: 1px solid var(--color-win-border-dark);
+  padding: 2px 4px;
+  font-size: 11px;
+}
+
 html {
   scroll-behavior: smooth;
-}
-
-/* Glassmorphism */
-.glass {
-  @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800;
 }
