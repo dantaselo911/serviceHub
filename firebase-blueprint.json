@@ -1,0 +1,112 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "categories": {
+      "title": "Category",
+      "description": "Service categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "icon": { "type": "string" },
+        "description": { "type": "string" },
+        "order": { "type": "integer" }
+      },
+      "required": ["name"]
+    },
+    "services": {
+      "title": "Service",
+      "description": "Services offered on the platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "shortDescription": { "type": "string" },
+        "fullDescription": { "type": "string" },
+        "categoryId": { "type": "string" },
+        "type": { "type": "string", "enum": ["digital", "physical"] },
+        "mode": { "type": "string", "enum": ["fixed", "quote"] },
+        "price": { "type": "number" },
+        "estimatedTime": { "type": "string" },
+        "location": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "categoryId", "type", "mode"]
+    },
+    "orders": {
+      "title": "Order",
+      "description": "Direct service purchases",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "processing", "completed", "cancelled"] },
+        "price": { "type": "number" },
+        "briefing": { "type": "string" },
+        "attachments": { "type": "array", "items": { "type": "string" } },
+        "providerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "serviceId", "status"]
+    },
+    "quotes": {
+      "title": "Quote",
+      "description": "Custom service quote requests",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "status": { "type": "string", "enum": ["requested", "quoted", "accepted", "rejected", "completed"] },
+        "quotedPrice": { "type": "number" },
+        "briefing": { "type": "string" },
+        "attachments": { "type": "array", "items": { "type": "string" } },
+        "providerId": { "type": "string" },
+        "response": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "serviceId", "status"]
+    },
+    "reviews": {
+      "title": "Review",
+      "description": "Service reviews",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "rating": { "type": "integer" },
+        "comment": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "serviceId", "rating"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "users", "description": "User profiles" },
+    "/categories/{categoryId}": { "schema": "categories", "description": "Service categories" },
+    "/services/{serviceId}": { "schema": "services", "description": "Services" },
+    "/orders/{orderId}": { "schema": "orders", "description": "Service orders" },
+    "/quotes/{quoteId}": { "schema": "quotes", "description": "Quote requests" },
+    "/reviews/{reviewId}": { "schema": "reviews", "description": "Service reviews" }
+  }
+}
