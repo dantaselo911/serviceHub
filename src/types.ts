@@ -7,6 +7,7 @@ export interface UserProfile {
   photoURL: string;
   role: UserRole;
   balance: number;
+  favorites?: string[];
   createdAt: any;
 }
 
@@ -68,14 +69,40 @@ export interface Quote {
   updatedAt: string;
 }
 
-export interface Review {
+export interface Transaction {
   id: string;
   userId: string;
-  serviceId: string;
-  orderId: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
+  amount: number;
+  type: 'deposit' | 'payment' | 'refund' | 'adjustment';
+  status: 'pending' | 'completed' | 'failed';
+  description: string;
+  transactionId?: string;
+  createdAt: any;
+}
+
+export type ChatType = 'support' | 'order';
+export type ChatStatus = 'open' | 'closed';
+
+export interface Chat {
+  id: string;
+  userId: string;
+  orderId?: string;
+  type: ChatType;
+  status: ChatStatus;
+  lastMessage?: string;
+  lastMessageAt?: any;
+  unreadCount?: { [uid: string]: number };
+  createdAt: any;
+  updatedAt: any;
+}
+
+export interface Message {
+  id: string;
+  chatId: string;
+  senderId: string;
+  text: string;
+  attachments?: string[];
+  createdAt: any;
 }
 
 export interface Notification {
@@ -86,5 +113,16 @@ export interface Notification {
   type: 'info' | 'success' | 'warning' | 'error';
   read: boolean;
   link?: string;
+  createdAt: any;
+}
+
+export interface Review {
+  id: string;
+  serviceId: string;
+  userId: string;
+  userName: string;
+  userPhoto: string;
+  rating: number;
+  comment: string;
   createdAt: any;
 }

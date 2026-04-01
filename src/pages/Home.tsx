@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { collection, getDocs, query, where, limit, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Category, Service } from '../types';
-import { Button, Card, Badge } from '../components/ui';
-import { Search, ArrowRight, Globe, Paintbrush, Video, Megaphone, Settings, Hammer, Zap, ShieldCheck, Star } from 'lucide-react';
+import { Button, Card, Badge, Input } from '../components/ui';
+import { Search, ArrowRight, Globe, Paintbrush, Video, Megaphone, Settings, Hammer, Zap, ShieldCheck, Star, Plus } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const categoryIcons: Record<string, any> = {
@@ -114,6 +114,60 @@ export const Home = () => {
         </div>
       </section>
 
+      {/* Services Categories Info */}
+      <section className="py-24 bg-zinc-950 border-t border-zinc-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white">O que oferecemos</h2>
+            <p className="text-zinc-500 mt-4 max-w-2xl mx-auto">
+              Soluções completas para você e sua empresa, com os melhores profissionais do mercado.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Design & Criatividade",
+                desc: "Logotipos, identidade visual, artes para redes sociais e muito mais.",
+                icon: Paintbrush
+              },
+              {
+                title: "Tecnologia & Web",
+                desc: "Desenvolvimento de sites, landing pages, e-commerce e automações.",
+                icon: Globe
+              },
+              {
+                title: "Marketing & Vendas",
+                desc: "Gestão de tráfego pago, SEO, social media e estratégias digitais.",
+                icon: Megaphone
+              },
+              {
+                title: "Vídeo & Áudio",
+                desc: "Edição de vídeo, motion graphics, locução e trilhas sonoras.",
+                icon: Video
+              },
+              {
+                title: "Serviços Físicos",
+                desc: "Reformas, elétrica, pintura e manutenção residencial/comercial.",
+                icon: Hammer
+              },
+              {
+                title: "Consultoria & Suporte",
+                desc: "Assistência técnica, consultoria de negócios e suporte especializado.",
+                icon: Settings
+              }
+            ].map((item, i) => (
+              <Card key={i} className="p-8 bg-black border-zinc-900 hover:border-orange-500/30 transition-all group">
+                <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-600/10 group-hover:text-orange-500 transition-colors">
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-zinc-500 text-sm leading-relaxed">{item.desc}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Featured Services */}
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -160,6 +214,203 @@ export const Home = () => {
                 </Card>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-24 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white">O que dizem nossos clientes</h2>
+            <p className="text-zinc-500 mt-4 max-w-2xl mx-auto">
+              Milhares de pessoas já transformaram seus projetos com a ServiceHub.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Ricardo Silva",
+                role: "Empresário",
+                content: "A ServiceHub facilitou muito a contratação de profissionais para minha empresa. O sistema de orçamentos é rápido e transparente.",
+                avatar: "https://i.pravatar.cc/150?u=ricardo"
+              },
+              {
+                name: "Ana Oliveira",
+                role: "Designer Freelancer",
+                content: "Como prestadora, a plataforma me deu visibilidade e segurança nos pagamentos. Recomendo tanto para clientes quanto para profissionais.",
+                avatar: "https://i.pravatar.cc/150?u=ana"
+              },
+              {
+                name: "Marcos Souza",
+                role: "Proprietário de Imóvel",
+                content: "Contratei uma reforma completa pelo site. O acompanhamento via chat e a qualidade do serviço foram excepcionais.",
+                avatar: "https://i.pravatar.cc/150?u=marcos"
+              }
+            ].map((testimonial, i) => (
+              <Card key={i} className="p-8 bg-zinc-950 border-zinc-900 hover:border-orange-500/30 transition-all">
+                <div className="flex items-center space-x-1 text-orange-500 mb-6">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
+                </div>
+                <p className="text-zinc-300 italic mb-8 leading-relaxed">"{testimonial.content}"</p>
+                <div className="flex items-center space-x-4">
+                  <img src={testimonial.avatar} alt={testimonial.name} className="w-12 h-12 rounded-full border border-zinc-800" />
+                  <div>
+                    <h4 className="text-white font-bold">{testimonial.name}</h4>
+                    <p className="text-zinc-500 text-sm">{testimonial.role}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-zinc-950">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-white">Perguntas Frequentes</h2>
+            <p className="text-zinc-500 mt-4">
+              Tudo o que você precisa saber sobre a ServiceHub.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "Como faço para contratar um serviço?",
+                a: "Basta navegar pelo catálogo, escolher o serviço desejado, preencher o briefing e realizar o pagamento. Se for um serviço sob orçamento, você solicita o valor e aguarda o retorno do prestador."
+              },
+              {
+                q: "O pagamento é seguro?",
+                a: "Sim! Utilizamos um sistema de saldo em conta. Você adiciona fundos via PIX e o valor fica retido na plataforma até que você confirme o recebimento do serviço."
+              },
+              {
+                q: "Como funciona o chat?",
+                a: "Após a contratação ou solicitação de orçamento, um chat exclusivo é aberto entre você e o administrador/prestador para alinhar todos os detalhes do projeto."
+              },
+              {
+                q: "Posso cancelar um pedido?",
+                a: "Sim, desde que o serviço ainda não tenha sido iniciado. Entre em contato com o suporte para solicitar o cancelamento e estorno do saldo."
+              }
+            ].map((faq, i) => (
+              <details key={i} className="group bg-black border border-zinc-900 rounded-xl overflow-hidden transition-all hover:border-zinc-800">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                  <span className="text-lg font-semibold text-white">{faq.q}</span>
+                  <Plus className="w-5 h-5 text-zinc-500 group-open:rotate-45 transition-transform" />
+                </summary>
+                <div className="px-6 pb-6 text-zinc-400 leading-relaxed">
+                  {faq.a}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-24 bg-black overflow-hidden relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-600/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <Card className="p-12 bg-zinc-950 border-zinc-900 text-center max-w-4xl mx-auto">
+            <h2 className="text-4xl font-bold text-white mb-4">Fique por dentro das novidades</h2>
+            <p className="text-zinc-500 mb-10 max-w-lg mx-auto">
+              Receba ofertas exclusivas, novos serviços e dicas de profissionais diretamente no seu e-mail.
+            </p>
+            <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+              <Input placeholder="Seu melhor e-mail" className="flex-grow" />
+              <Button type="submit">Inscrever-se</Button>
+            </form>
+          </Card>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section className="py-24 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl font-bold text-white">ServiceHub Blog</h2>
+              <p className="text-zinc-500 mt-4">Dicas, tendências e insights para o seu negócio.</p>
+            </div>
+            <Button variant="outline">Ver todos os artigos</Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Como escolher o melhor design para sua marca",
+                excerpt: "Descubra os elementos essenciais para criar uma identidade visual impactante e memorável.",
+                date: "28 Mar, 2026",
+                image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800"
+              },
+              {
+                title: "5 tendências de desenvolvimento web para 2026",
+                excerpt: "Fique por dentro das tecnologias que estão moldando o futuro da web e como elas podem ajudar seu negócio.",
+                date: "25 Mar, 2026",
+                image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&q=80&w=800"
+              },
+              {
+                title: "Guia completo para reformas residenciais",
+                excerpt: "Tudo o que você precisa planejar antes de começar a transformar sua casa ou apartamento.",
+                date: "20 Mar, 2026",
+                image: "https://images.unsplash.com/photo-1503387762-592dee58c460?auto=format&fit=crop&q=80&w=800"
+              }
+            ].map((post, i) => (
+              <div key={i} className="group cursor-pointer">
+                <div className="aspect-[16/10] rounded-2xl overflow-hidden mb-6 border border-zinc-900">
+                  <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <div className="text-sm text-orange-500 font-bold mb-2 uppercase tracking-wider">{post.date}</div>
+                <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-orange-500 transition-colors">{post.title}</h3>
+                <p className="text-zinc-500 leading-relaxed line-clamp-2">{post.excerpt}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 bg-zinc-950 border-y border-zinc-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+              <div className="text-4xl font-bold text-white mb-2">10k+</div>
+              <div className="text-zinc-500 text-sm uppercase tracking-widest">Clientes Felizes</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white mb-2">500+</div>
+              <div className="text-zinc-500 text-sm uppercase tracking-widest">Profissionais</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white mb-2">25k+</div>
+              <div className="text-zinc-500 text-sm uppercase tracking-widest">Projetos Entregues</div>
+            </div>
+            <div>
+              <div className="text-4xl font-bold text-white mb-2">4.9/5</div>
+              <div className="text-zinc-500 text-sm uppercase tracking-widest">Avaliação Média</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-black relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-full bg-orange-600/5 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h2 className="text-5xl font-bold text-white mb-8">Pronto para tirar seu projeto do papel?</h2>
+          <p className="text-xl text-zinc-500 mb-12 max-w-2xl mx-auto">
+            Junte-se a milhares de clientes satisfeitos e tenha acesso aos melhores profissionais do mercado.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link to="/catalog">
+              <Button size="lg" className="px-12 py-8 text-xl">Começar Agora</Button>
+            </Link>
+            <Link to="/support">
+              <Button variant="outline" size="lg" className="px-12 py-8 text-xl">Falar com Consultor</Button>
+            </Link>
           </div>
         </div>
       </section>

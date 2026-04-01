@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui';
-import { LayoutDashboard, ShoppingBag, Briefcase, Users, Settings, LogOut, ArrowLeft, Layers } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Briefcase, Users, Settings, LogOut, ArrowLeft, Layers, MessageSquare } from 'lucide-react';
 
 export const AdminLayout = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -43,6 +43,10 @@ export const AdminLayout = () => {
           <Link to="/admin/users" className="flex items-center space-x-3 px-4 py-3 text-zinc-400 hover:bg-zinc-900 hover:text-white rounded-lg transition-all">
             <Users className="w-5 h-5" />
             <span className="font-medium">Usuários</span>
+          </Link>
+          <Link to="/admin/chats" className="flex items-center space-x-3 px-4 py-3 text-zinc-400 hover:bg-zinc-900 hover:text-white rounded-lg transition-all">
+            <MessageSquare className="w-5 h-5" />
+            <span className="font-medium">Atendimento</span>
           </Link>
           <Link to="/admin/settings" className="flex items-center space-x-3 px-4 py-3 text-zinc-400 hover:bg-zinc-900 hover:text-white rounded-lg transition-all">
             <Settings className="w-5 h-5" />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../ui';
-import { Menu, X, User, LogOut, LayoutDashboard, Briefcase, FileText, Search, Bell, Plus } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Briefcase, FileText, Search, Bell, Plus, MessageSquare, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { NotificationCenter } from '../NotificationCenter';
 
@@ -30,6 +30,11 @@ export const Navbar = () => {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/catalog" className="text-zinc-400 hover:text-white transition-colors">Serviços</Link>
+            <Link to="/how-it-works" className="text-zinc-400 hover:text-white transition-colors">Como Funciona</Link>
+            <Link to="/pricing" className="text-zinc-400 hover:text-white transition-colors">Preços</Link>
+            <Link to="/support" className="text-zinc-400 hover:text-white transition-colors flex items-center">
+              <MessageSquare className="w-4 h-4 mr-1" /> Dúvidas
+            </Link>
             {user ? (
               <div className="flex items-center space-x-4">
                 <div className="bg-zinc-900 border border-zinc-800 rounded-full px-3 py-1 flex items-center space-x-2">
@@ -46,6 +51,9 @@ export const Navbar = () => {
                 )}
                 <Link to="/my-orders" className="text-zinc-400 hover:text-white transition-colors flex items-center">
                   <FileText className="w-4 h-4 mr-1" /> Pedidos
+                </Link>
+                <Link to="/favorites" className="text-zinc-400 hover:text-white transition-colors flex items-center">
+                  <Heart className="w-4 h-4 mr-1" /> Favoritos
                 </Link>
                 <NotificationCenter />
                 <div className="relative group">
@@ -86,6 +94,8 @@ export const Navbar = () => {
           >
             <div className="px-4 pt-2 pb-6 space-y-4">
               <Link to="/catalog" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Serviços</Link>
+              <Link to="/how-it-works" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Como Funciona</Link>
+              <Link to="/pricing" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Preços</Link>
               {user ? (
                 <>
                   <div className="flex items-center justify-between py-2">
@@ -94,6 +104,7 @@ export const Navbar = () => {
                   </div>
                   {isAdmin && <Link to="/admin" className="block text-orange-500 font-medium py-2" onClick={() => setIsMenuOpen(false)}>Painel Admin</Link>}
                   <Link to="/my-orders" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Meus Pedidos</Link>
+                  <Link to="/favorites" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Meus Favoritos</Link>
                   <Link to="/profile" className="block text-zinc-400 hover:text-white py-2" onClick={() => setIsMenuOpen(false)}>Perfil</Link>
                   <button onClick={handleSignOut} className="w-full text-left text-red-400 py-2 flex items-center">
                     <LogOut className="w-4 h-4 mr-2" /> Sair
@@ -129,6 +140,7 @@ export const Footer = () => (
           <h4 className="text-white font-semibold mb-4">Plataforma</h4>
           <ul className="space-y-2 text-zinc-500 text-sm">
             <li><Link to="/catalog" className="hover:text-orange-500 transition-colors">Catálogo de Serviços</Link></li>
+            <li><Link to="/favorites" className="hover:text-orange-500 transition-colors">Meus Favoritos</Link></li>
             <li><Link to="/how-it-works" className="hover:text-orange-500 transition-colors">Como funciona</Link></li>
             <li><Link to="/pricing" className="hover:text-orange-500 transition-colors">Preços</Link></li>
           </ul>
@@ -137,8 +149,10 @@ export const Footer = () => (
           <h4 className="text-white font-semibold mb-4">Suporte</h4>
           <ul className="space-y-2 text-zinc-500 text-sm">
             <li><Link to="/contact" className="hover:text-orange-500 transition-colors">Contato</Link></li>
+            <li><Link to="/support" className="hover:text-orange-500 transition-colors">Chat ao Vivo</Link></li>
             <li><Link to="/faq" className="hover:text-orange-500 transition-colors">FAQ</Link></li>
             <li><Link to="/terms" className="hover:text-orange-500 transition-colors">Termos de Uso</Link></li>
+            <li><Link to="/privacy" className="hover:text-orange-500 transition-colors">Privacidade</Link></li>
           </ul>
         </div>
       </div>

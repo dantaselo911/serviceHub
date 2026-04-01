@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { collection, getDocs, query, where, orderBy, updateDoc, doc } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType } from '../firebase';
 import { Order, Quote, Service, OrderStatus, QuoteStatus } from '../types';
@@ -117,9 +118,16 @@ export const MyOrders = () => {
                     </div>
                   </div>
 
-                  <div className="md:w-64 flex flex-col justify-center border-l border-zinc-800 md:pl-6">
-                    <div className="text-xs text-zinc-500 uppercase font-bold mb-1">Valor Pago</div>
-                    <div className="text-2xl font-bold text-white">R$ {order.price.toLocaleString('pt-BR')}</div>
+                  <div className="md:w-64 flex flex-col justify-center border-l border-zinc-800 md:pl-6 space-y-4">
+                    <div>
+                      <div className="text-xs text-zinc-500 uppercase font-bold mb-1">Valor Pago</div>
+                      <div className="text-2xl font-bold text-white">R$ {order.price.toLocaleString('pt-BR')}</div>
+                    </div>
+                    <Link to={`/order-chat/${order.id}`}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        <MessageSquare className="w-4 h-4 mr-2" /> Chat do Pedido
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </Card>

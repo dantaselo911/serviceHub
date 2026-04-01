@@ -11,6 +11,12 @@ service cloud.firestore {
     // Collection: transactions
     // Fields: id, userId, amount, type, status, description, transactionId, createdAt
     //
+    // Collection: chats
+    // Fields: id, userId, orderId, type, status, lastMessage, lastMessageAt, createdAt, updatedAt
+    //
+    // Collection: messages
+    // Fields: id, chatId, senderId, text, attachments, createdAt
+    //
     // Collection: categories
     // Fields: id, name, icon, description, order
     //
@@ -76,6 +82,19 @@ service cloud.firestore {
              data.status in ['pending', 'completed', 'failed'];
     }
 
+    function isValidChat(data) {
+      return hasRequiredFields(['userId', 'type', 'status']) &&
+             data.userId is string &&
+             data.type in ['support', 'order'] &&
+             data.status in ['open', 'closed'];
+    }
+
+    function isValidMessage(data) {
+      return hasRequiredFields(['chatId', 'senderId', 'text']) &&
+             data.chatId is string && data.senderId is string &&
+             data.text is string && data.text.size() > 0;
+    }
+
     function isValidCategory(data) {
       return hasOnlyAllowedFields(['id', 'name', 'icon', 'description', 'order']) &&
              data.name is string && data.name.size() > 0;
@@ -122,6 +141,18 @@ service cloud.firestore {
       allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidTransaction(request.resource.data);
       allow update: if isAdmin();
       allow delete: if isAdmin();
+    }
+
+    match /chats/{chatId} {
+      allow read: if isAuthenticated() && (isAdmin() || resource.data.userId == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid && isValidChat(request.resource.data);
+      allow update: if isAuthenticated() && (isAdmin() || (resource.data.userId == request.auth.uid && isValidChat(request.resource.data)));
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if isAuthenticated() && (isAdmin() || get(/databases/$(database)/documents/chats/$(chatId)).data.userId == request.auth.uid);
+        allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid && isValidMessage(request.resource.data);
+      }
     }
 
     match /categories/{categoryId} {

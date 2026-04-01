@@ -116,6 +116,37 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "amount", "type", "status"]
+    },
+    "chats": {
+      "title": "Chat",
+      "description": "Conversations between users and admins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "orderId": { "type": "string" },
+        "type": { "type": "string", "enum": ["support", "order"] },
+        "status": { "type": "string", "enum": ["open", "closed"] },
+        "lastMessage": { "type": "string" },
+        "lastMessageAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "type", "status"]
+    },
+    "messages": {
+      "title": "Message",
+      "description": "Individual chat messages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "chatId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "attachments": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chatId", "senderId", "text"]
     }
   },
   "firestore": {
@@ -125,6 +156,8 @@
     "/orders/{orderId}": { "schema": "orders", "description": "Service orders" },
     "/quotes/{quoteId}": { "schema": "quotes", "description": "Quote requests" },
     "/reviews/{reviewId}": { "schema": "reviews", "description": "Service reviews" },
-    "/transactions/{transactionId}": { "schema": "transactions", "description": "Balance transactions" }
+    "/transactions/{transactionId}": { "schema": "transactions", "description": "Balance transactions" },
+    "/chats/{chatId}": { "schema": "chats", "description": "Chat sessions" },
+    "/chats/{chatId}/messages/{messageId}": { "schema": "messages", "description": "Chat messages" }
   }
 }

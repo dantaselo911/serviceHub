@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, addDoc, collection, serverTimestamp, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType, createNotification } from '../firebase';
 import { Service, Category } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Badge, Input } from '../components/ui';
-import { Star, Clock, MapPin, ShieldCheck, ArrowLeft, Send, FileUp, Info } from 'lucide-react';
+import { Star, Clock, MapPin, ShieldCheck, ArrowLeft, Send, FileUp, Info, Heart } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ReviewSection } from '../components/ReviewSection';
 import { toast } from 'sonner';
 import { motion } from 'motion/react';
+import { cn } from '../components/ui';
 
 export const ServiceDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -112,6 +113,33 @@ export const ServiceDetail = () => {
     }
   };
 
+  const toggleFavorite = async () => {
+    if (!user) {
+      toast.error('Faça login para favoritar serviços.');
+      return;
+    }
+
+    const isFavorite = user.favorites?.includes(service?.id || '');
+    const userRef = doc(db, 'users', user.uid);
+
+    try {
+      if (isFavorite) {
+        await updateDoc(userRef, {
+          favorites: arrayRemove(service?.id)
+        });
+        toast.success('Removido dos favoritos');
+      } else {
+        await updateDoc(userRef, {
+          favorites: arrayUnion(service?.id)
+        });
+        toast.success('Adicionado aos favoritos');
+      }
+    } catch (error) {
+      console.error("Error toggling favorite", error);
+      toast.error('Erro ao atualizar favoritos.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -155,7 +183,23 @@ export const ServiceDetail = () => {
                   {service.type === 'digital' ? 'Digital' : 'Presencial'}
                 </Badge>
               </div>
-              <h1 className="text-4xl font-bold text-white mb-4">{service.name}</h1>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <h1 className="text-4xl font-bold text-white">{service.name}</h1>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={toggleFavorite}
+                  className={cn(
+                    "flex items-center space-x-2 transition-all",
+                    user?.favorites?.includes(service.id)
+                      ? "bg-orange-600/10 border-orange-600 text-orange-500"
+                      : "text-zinc-400 hover:text-white"
+                  )}
+                >
+                  <Heart className={cn("w-4 h-4", user?.favorites?.includes(service.id) && "fill-current")} />
+                  <span>{user?.favorites?.includes(service.id) ? 'Favoritado' : 'Favoritar'}</span>
+                </Button>
+              </div>
               <div className="flex items-center space-x-6 text-zinc-400 mb-8">
                 <div className="flex items-center">
                   <Star className="w-5 h-5 text-amber-500 fill-current mr-2" />

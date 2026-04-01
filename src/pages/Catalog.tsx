@@ -4,10 +4,15 @@ import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Category, Service } from '../types';
 import { Button, Card, Badge, Input } from '../components/ui';
-import { Search, Filter, SlidersHorizontal, Star, MapPin, Clock } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Search, Filter, SlidersHorizontal, Star, MapPin, Clock, Heart } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useAuth } from '../contexts/AuthContext';
+import { updateDoc, doc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { toast } from 'sonner';
+import { cn } from '../components/ui';
 
 export const Catalog = () => {
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [services, setServices] = useState<Service[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -71,6 +76,35 @@ export const Catalog = () => {
     if (type === 'all') params.delete('type');
     else params.set('type', type);
     setSearchParams(params);
+  };
+
+  const toggleFavorite = async (e: React.MouseEvent, serviceId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) {
+      toast.error('Faça login para favoritar serviços.');
+      return;
+    }
+
+    const isFavorite = user.favorites?.includes(serviceId);
+    const userRef = doc(db, 'users', user.uid);
+
+    try {
+      if (isFavorite) {
+        await updateDoc(userRef, {
+          favorites: arrayRemove(serviceId)
+        });
+        toast.success('Removido dos favoritos');
+      } else {
+        await updateDoc(userRef, {
+          favorites: arrayUnion(serviceId)
+        });
+        toast.success('Adicionado aos favoritos');
+      }
+    } catch (error) {
+      console.error("Error toggling favorite", error);
+      toast.error('Erro ao atualizar favoritos.');
+    }
   };
 
   return (
@@ -180,10 +214,18 @@ export const Catalog = () => {
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute top-4 left-4">
-                          <Badge variant={service.type === 'digital' ? 'info' : 'success'}>
-                            {service.type === 'digital' ? 'Digital' : 'Presencial'}
-                          </Badge>
+                        <div className="absolute top-4 right-4">
+                          <button
+                            onClick={(e) => toggleFavorite(e, service.id)}
+                            className={cn(
+                              "p-2 rounded-full backdrop-blur-md transition-all",
+                              user?.favorites?.includes(service.id)
+                                ? "bg-orange-600 text-white"
+                                : "bg-black/40 text-white hover:bg-black/60"
+                            )}
+                          >
+                            <Heart className={cn("w-4 h-4", user?.favorites?.includes(service.id) && "fill-current")} />
+                          </button>
                         </div>
                       </div>
                       <div className="p-6 flex flex-col flex-grow">
@@ -245,5 +287,3 @@ export const Catalog = () => {
     </div>
   );
 };
-
-import { cn } from '../components/ui';
