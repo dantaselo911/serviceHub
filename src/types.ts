@@ -46,6 +46,8 @@ export interface Order {
   serviceId: string;
   status: OrderStatus;
   price: number;
+  discountAmount?: number;
+  couponCode?: string;
   briefing: string;
   attachments: string[];
   providerId?: string;
@@ -61,12 +63,31 @@ export interface Quote {
   serviceId: string;
   status: QuoteStatus;
   quotedPrice?: number;
+  discountAmount?: number;
+  couponCode?: string;
   briefing: string;
   attachments: string[];
   providerId?: string;
-  response?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export type DiscountType = 'percentage' | 'fixed';
+
+export interface Coupon {
+  id: string;
+  code: string;
+  description: string;
+  discountType: DiscountType;
+  discountValue: number;
+  appliesToCategory: string | null;
+  appliesToService: string | null;
+  minimumOrderValue: number;
+  usageLimit: number;
+  usedCount: number;
+  expiresAt: string;
+  active: boolean;
+  createdAt: any;
 }
 
 export interface Transaction {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, addDoc, collection, serverTimestamp, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, getDoc, addDoc, collection, serverTimestamp, updateDoc, arrayUnion, arrayRemove, query, where, getDocs } from 'firebase/firestore';
 import { db, handleFirestoreError, OperationType, createNotification } from '../firebase';
 import { Service, Category } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { Button, Card, Badge, Input } from '../components/ui';
-import { Star, Clock, MapPin, ShieldCheck, ArrowLeft, Send, FileUp, Info, Heart } from 'lucide-react';
+import { Star, Clock, MapPin, ShieldCheck, ArrowLeft, Send, FileUp, Info, Heart, Ticket, X } from 'lucide-react';
 import { FileUploader } from '../components/FileUploader';
 import { ReviewSection } from '../components/ReviewSection';
 import { toast } from 'sonner';
@@ -24,6 +24,12 @@ export const ServiceDetail = () => {
   
   const [briefing, setBriefing] = useState('');
   const [attachments, setAttachments] = useState<string[]>([]);
+  
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<any | null>(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   useEffect(() => {
     const fetchService = async () => {
@@ -69,12 +75,24 @@ export const ServiceDetail = () => {
           serviceId: service.id,
           status: 'pending',
           price: service.price,
+          discountAmount: discountAmount,
+          finalPrice: service.price - discountAmount,
+          couponCode: appliedCoupon?.code || null,
           briefing,
           attachments,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
         };
         await addDoc(collection(db, 'orders'), orderData);
+
+        // Update coupon usage count if applied
+        if (appliedCoupon) {
+          const couponRef = doc(db, 'coupons', appliedCoupon.id);
+          await updateDoc(couponRef, {
+            usedCount: appliedCoupon.usedCount + 1
+          });
+        }
+
         await createNotification(
           user.uid,
           'Pedido Realizado!',
@@ -90,6 +108,7 @@ export const ServiceDetail = () => {
           userId: user.uid,
           serviceId: service?.id,
           status: 'requested',
+          couponCode: appliedCoupon?.code || null,
           briefing,
           attachments,
           createdAt: serverTimestamp(),
@@ -111,6 +130,78 @@ export const ServiceDetail = () => {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    if (!service) return;
+
+    setIsValidatingCoupon(true);
+    try {
+      const q = query(collection(db, 'coupons'), where('code', '==', couponCode.toUpperCase()), where('active', '==', true));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast.error('Cupom inválido ou expirado');
+        return;
+      }
+
+      const couponData = { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() } as any;
+
+      // Validate expiration
+      if (new Date(couponData.expiresAt) < new Date()) {
+        toast.error('Cupom expirado');
+        return;
+      }
+
+      // Validate usage limit
+      if (couponData.usedCount >= couponData.usageLimit) {
+        toast.error('Limite de uso do cupom atingido');
+        return;
+      }
+
+      // Validate minimum order value
+      if (service.mode === 'fixed' && service.price < couponData.minimumOrderValue) {
+        toast.error(`Valor mínimo para este cupom é R$ ${couponData.minimumOrderValue}`);
+        return;
+      }
+
+      // Validate applicability
+      if (couponData.appliesToCategory && couponData.appliesToCategory !== service.categoryId) {
+        toast.error('Este cupom não é válido para esta categoria');
+        return;
+      }
+
+      if (couponData.appliesToService && couponData.appliesToService !== service.id) {
+        toast.error('Este cupom não é válido para este serviço');
+        return;
+      }
+
+      // Calculate discount
+      let discount = 0;
+      if (service.mode === 'fixed') {
+        if (couponData.discountType === 'percentage') {
+          discount = (service.price * couponData.discountValue) / 100;
+        } else {
+          discount = couponData.discountValue;
+        }
+      }
+
+      setAppliedCoupon(couponData);
+      setDiscountAmount(discount);
+      toast.success('Cupom aplicado com sucesso!');
+    } catch (err) {
+      console.error('Error applying coupon:', err);
+      toast.error('Erro ao validar cupom');
+    } finally {
+      setIsValidatingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+    setCouponCode('');
   };
 
   const toggleFavorite = async () => {
@@ -279,6 +370,62 @@ export const ServiceDetail = () => {
                     </label>
                     <FileUploader onFilesChange={setAttachments} />
                   </div>
+
+                  {/* Coupon Section */}
+                  <div className="pt-4 border-t border-zinc-800">
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">
+                      Cupom de Desconto
+                    </label>
+                    {appliedCoupon ? (
+                      <div className="flex items-center justify-between bg-orange-600/10 border border-orange-600/30 rounded-lg px-4 py-2">
+                        <div className="flex items-center text-orange-500">
+                          <Ticket className="w-4 h-4 mr-2" />
+                          <span className="font-bold">{appliedCoupon.code}</span>
+                          <span className="ml-2 text-xs">(- R$ {discountAmount.toLocaleString('pt-BR')})</span>
+                        </div>
+                        <button onClick={removeCoupon} className="text-zinc-500 hover:text-white transition-colors">
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex space-x-2">
+                        <Input
+                          placeholder="Digite seu cupom"
+                          value={couponCode}
+                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                          className="flex-grow"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={handleApplyCoupon}
+                          isLoading={isValidatingCoupon}
+                          disabled={!couponCode.trim()}
+                        >
+                          Aplicar
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Order Summary */}
+                  {service.mode === 'fixed' && (
+                    <div className="pt-4 border-t border-zinc-800 space-y-2">
+                      <div className="flex justify-between text-sm text-zinc-400">
+                        <span>Subtotal</span>
+                        <span>R$ {service.price.toLocaleString('pt-BR')}</span>
+                      </div>
+                      {discountAmount > 0 && (
+                        <div className="flex justify-between text-sm text-orange-500">
+                          <span>Desconto</span>
+                          <span>- R$ {discountAmount.toLocaleString('pt-BR')}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between text-lg font-bold text-white pt-2">
+                        <span>Total</span>
+                        <span>R$ {(service.price - discountAmount).toLocaleString('pt-BR')}</span>
+                      </div>
+                    </div>
+                  )}
 
                   <Button 
                     className="w-full py-6 text-lg" 

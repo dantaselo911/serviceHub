@@ -24,6 +24,7 @@ import { AdminOrders } from './pages/Admin/Orders';
 import { AdminCategories } from './pages/Admin/Categories';
 import { AdminUsers } from './pages/Admin/Users';
 import { AdminChats } from './pages/Admin/Chats';
+import { AdminCoupons } from './pages/Admin/Coupons';
 import { AdminSettings } from './pages/Admin/Settings';
 import { Toaster } from 'sonner';
 import { collection, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -69,183 +70,131 @@ const SeedData = () => {
           catDocs.forEach(doc => catMap[doc.data().name] = doc.id);
 
           const initialServices = [
-            {
-              name: 'Landing Page Premium',
-              shortDescription: 'Criação de landing page de alta conversão com design moderno e responsivo.',
-              fullDescription: 'Desenvolvemos landing pages focadas em conversão, utilizando as melhores práticas de UX/UI. Inclui integração com formulários, design responsivo, otimização de velocidade e SEO básico.',
-              categoryId: catMap['Criação de Sites'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 1500,
-              estimatedTime: '7-10 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Identidade Visual Completa',
-              shortDescription: 'Criação de logotipo, paleta de cores, tipografia e manual da marca.',
-              fullDescription: 'Construímos a alma da sua marca. O pacote inclui logotipo (3 variações), manual da marca, paleta de cores, tipografia e artes para redes sociais.',
-              categoryId: catMap['Design Gráfico'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 2500,
-              estimatedTime: '15 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Reforma Residencial',
-              shortDescription: 'Serviços de reforma completa para sua casa ou apartamento.',
-              fullDescription: 'Equipe especializada em reformas residenciais. Pintura, elétrica, hidráulica e acabamentos. Solicite um orçamento para uma visita técnica.',
-              categoryId: catMap['Reformas'],
-              type: 'physical',
-              mode: 'quote',
-              price: 0,
-              estimatedTime: 'Sob consulta',
-              location: 'São Paulo e Região',
-              imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Gestão de Tráfego (Meta Ads)',
-              shortDescription: 'Configuração e gestão de anúncios no Facebook e Instagram.',
-              fullDescription: 'Gestão profissional de campanhas de anúncios. Foco em ROI, segmentação avançada, testes A/B e relatórios semanais de desempenho.',
-              categoryId: catMap['Tráfego Pago'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 800,
-              estimatedTime: 'Mensal',
-              imageUrl: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Edição de Vídeo para YouTube',
-              shortDescription: 'Edição profissional de vídeos longos para canais do YouTube.',
-              fullDescription: 'Edição dinâmica, cortes precisos, correção de cor, trilha sonora licenciada e legendas. Ideal para criadores de conteúdo que buscam qualidade profissional.',
-              categoryId: catMap['Edição de Vídeo'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 350,
-              estimatedTime: '3 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Instalação Elétrica Completa',
-              shortDescription: 'Instalação e manutenção elétrica residencial e comercial.',
-              fullDescription: 'Serviços de eletricista profissional. Quadro de luz, fiação, tomadas, iluminação e manutenção preventiva. Atendimento rápido e seguro.',
-              categoryId: catMap['Elétrica'],
-              type: 'physical',
-              mode: 'quote',
-              price: 0,
-              estimatedTime: 'Sob consulta',
-              location: 'São Paulo e Região',
-              imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Social Media (Pacote Mensal)',
-              shortDescription: 'Gestão completa de redes sociais com 12 posts mensais.',
-              fullDescription: 'Criação de conteúdo, artes, legendas, agendamento e interação básica com seguidores. Foco em engajamento e crescimento orgânico.',
-              categoryId: catMap['Social Media'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 1200,
-              estimatedTime: 'Mensal',
-              imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Fachada em ACM',
-              shortDescription: 'Fabricação e instalação de fachadas comerciais em ACM.',
-              fullDescription: 'Fachadas modernas e duráveis em ACM. Diversas cores e acabamentos. Inclui projeto visual e instalação profissional.',
-              categoryId: catMap['Fachadas de Loja'],
-              type: 'physical',
-              mode: 'quote',
-              price: 0,
-              estimatedTime: '15-20 dias',
-              location: 'São Paulo e Região',
-              imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Landing Page de Alta Conversão',
-              shortDescription: 'Página de vendas otimizada para converter visitantes.',
-              fullDescription: 'Design responsivo, copywriting persuasivo, integração com CRM e otimização de velocidade. Foco total em resultados.',
-              categoryId: catMap['Web Design'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 1500,
-              estimatedTime: '7-10 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Gestão de Google Ads',
-              shortDescription: 'Campanhas de pesquisa e display para atrair leads.',
-              fullDescription: 'Configuração de tags, pesquisa de palavras-chave, otimização semanal e relatório de ROI. Atraia quem já está procurando seu serviço.',
-              categoryId: catMap['Tráfego Pago'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 1800,
-              estimatedTime: 'Mensal',
-              imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Pintura Residencial Premium',
-              shortDescription: 'Pintura interna e externa com acabamento de alto padrão.',
-              fullDescription: 'Proteção de móveis, preparação de paredes, tintas de primeira linha e limpeza pós-obra. Transforme seu ambiente com qualidade.',
-              categoryId: catMap['Pintura'],
-              type: 'physical',
-              mode: 'quote',
-              price: 0,
-              estimatedTime: 'Sob consulta',
-              location: 'São Paulo e Região',
-              imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Identidade Visual Completa',
-              shortDescription: 'Criação de logotipo, manual da marca e papelaria.',
-              fullDescription: '3 conceitos iniciais, manual da marca, arquivos editáveis e artes para redes sociais. Sua marca com presença profissional.',
-              categoryId: catMap['Identidade Visual'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 2200,
-              estimatedTime: '15-20 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1572044162444-ad60f128bde2?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            },
-            {
-              name: 'Edição de Vídeo Institucional',
-              shortDescription: 'Edição profissional para vídeos de empresas e marcas.',
-              fullDescription: 'Cortes precisos, correção de cor, trilha sonora licenciada e legendas. Ideal para apresentações e redes sociais.',
-              categoryId: catMap['Edição de Vídeo'],
-              type: 'digital',
-              mode: 'fixed',
-              price: 950,
-              estimatedTime: '3-5 dias',
-              imageUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800',
-              active: true,
-              createdAt: serverTimestamp(),
-            }
+            // CRIAÇÃO DE SITES
+            { name: 'Landing Page Profissional', shortDescription: 'Página de vendas de alta conversão.', fullDescription: 'Design responsivo, copywriting persuasivo e otimização de velocidade.', categoryId: catMap['Criação de Sites'], type: 'digital', mode: 'fixed', price: 497, estimatedTime: '5 dias', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Site Institucional 5 Páginas', shortDescription: 'Site completo para sua empresa.', fullDescription: 'Home, Sobre, Serviços, Blog e Contato. Design exclusivo e painel de gestão.', categoryId: catMap['Criação de Sites'], type: 'digital', mode: 'fixed', price: 1290, estimatedTime: '15 dias', imageUrl: 'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Loja Virtual Básica', shortDescription: 'Comece a vender online hoje.', fullDescription: 'Configuração de produtos, meios de pagamento e frete. Design responsivo.', categoryId: catMap['Criação de Sites'], type: 'digital', mode: 'fixed', price: 1990, estimatedTime: '20 dias', imageUrl: 'https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Página de Captura', shortDescription: 'Focada em geração de leads.', fullDescription: 'Design limpo e direto para capturar e-mails e contatos.', categoryId: catMap['Criação de Sites'], type: 'digital', mode: 'fixed', price: 350, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'One Page Premium', shortDescription: 'Tudo em uma única página elegante.', fullDescription: 'Ideal para portfólios ou lançamentos de produtos específicos.', categoryId: catMap['Criação de Sites'], type: 'digital', mode: 'fixed', price: 790, estimatedTime: '7 dias', imageUrl: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // DESIGN GRÁFICO
+            { name: 'Criação de Logo', shortDescription: 'Sua marca com identidade única.', fullDescription: 'Criação de logotipo profissional com 3 variações e manual básico.', categoryId: catMap['Design Gráfico'], type: 'digital', mode: 'fixed', price: 120, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Identidade Visual Básica', shortDescription: 'Logo + Paleta + Tipografia.', fullDescription: 'Manual da marca completo para manter a consistência visual.', categoryId: catMap['Design Gráfico'], type: 'digital', mode: 'fixed', price: 350, estimatedTime: '7 dias', imageUrl: 'https://images.unsplash.com/photo-1572044162444-ad60f128bde2?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Banner para Loja', shortDescription: 'Destaque suas promoções.', fullDescription: 'Artes para banners rotativos ou fixos em e-commerce.', categoryId: catMap['Design Gráfico'], type: 'digital', mode: 'fixed', price: 180, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Flyer Promocional', shortDescription: 'Divulgue seu evento ou produto.', fullDescription: 'Design de flyer para impressão ou distribuição digital.', categoryId: catMap['Design Gráfico'], type: 'digital', mode: 'fixed', price: 90, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Card para Redes Sociais', shortDescription: 'Post profissional para Instagram/FB.', fullDescription: 'Arte individual para postagem em redes sociais.', categoryId: catMap['Design Gráfico'], type: 'digital', mode: 'fixed', price: 35, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // EDIÇÃO DE VÍDEO
+            { name: 'Edição de Reels/Shorts', shortDescription: 'Vídeos curtos e dinâmicos.', fullDescription: 'Edição com legendas, cortes rápidos e trilha sonora trend.', categoryId: catMap['Edição de Vídeo'], type: 'digital', mode: 'fixed', price: 40, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Vídeo Promocional 30s', shortDescription: 'Ideal para anúncios rápidos.', fullDescription: 'Edição focada em vendas para campanhas de tráfego pago.', categoryId: catMap['Edição de Vídeo'], type: 'digital', mode: 'fixed', price: 180, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Edição para YouTube', shortDescription: 'Vídeos longos com qualidade.', fullDescription: 'Cortes, correção de cor, áudio e elementos gráficos.', categoryId: catMap['Edição de Vídeo'], type: 'digital', mode: 'fixed', price: 250, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Motion simples para anúncio', shortDescription: 'Animações que chamam atenção.', fullDescription: 'Elementos gráficos animados para destacar sua oferta.', categoryId: catMap['Edição de Vídeo'], type: 'digital', mode: 'fixed', price: 220, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Legendas dinâmicas', shortDescription: 'Aumente a retenção do seu vídeo.', fullDescription: 'Legendas coloridas e animadas estilo criadores famosos.', categoryId: catMap['Edição de Vídeo'], type: 'digital', mode: 'fixed', price: 60, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // TRÁFEGO PAGO
+            { name: 'Configuração de Campanha Meta Ads', shortDescription: 'Setup inicial de anúncios.', fullDescription: 'Configuração de pixel, públicos e primeira campanha.', categoryId: catMap['Tráfego Pago'], type: 'digital', mode: 'fixed', price: 250, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Gestão Mensal de Tráfego Básica', shortDescription: 'Acompanhamento e otimização.', fullDescription: 'Gestão contínua de campanhas com relatórios semanais.', categoryId: catMap['Tráfego Pago'], type: 'digital', mode: 'fixed', price: 900, estimatedTime: 'Mensal', imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Campanha para WhatsApp', shortDescription: 'Leads direto no seu celular.', fullDescription: 'Focada em levar clientes para o fechamento no Whats.', categoryId: catMap['Tráfego Pago'], type: 'digital', mode: 'fixed', price: 180, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Campanha para Leads', shortDescription: 'Encha seu funil de vendas.', fullDescription: 'Campanhas de formulário ou conversão em landing page.', categoryId: catMap['Tráfego Pago'], type: 'digital', mode: 'fixed', price: 350, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Auditoria de Anúncios', shortDescription: 'Descubra onde está perdendo dinheiro.', fullDescription: 'Análise detalhada de campanhas existentes com sugestões de melhoria.', categoryId: catMap['Tráfego Pago'], type: 'digital', mode: 'fixed', price: 200, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // SOCIAL MEDIA
+            { name: 'Gestão Mensal Instagram Básica', shortDescription: 'Presença digital constante.', fullDescription: 'Postagens regulares, interação e gestão de perfil.', categoryId: catMap['Social Media'], type: 'digital', mode: 'fixed', price: 600, estimatedTime: 'Mensal', imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Calendário de Conteúdo', shortDescription: 'Saiba o que postar e quando.', fullDescription: 'Planejamento estratégico de temas para 30 dias.', categoryId: catMap['Social Media'], type: 'digital', mode: 'fixed', price: 180, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1506784919141-93b3393a4929?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Pacote com 12 posts', shortDescription: 'Artes profissionais para seu feed.', fullDescription: 'Criação de 12 artes com legendas e hashtags.', categoryId: catMap['Social Media'], type: 'digital', mode: 'fixed', price: 250, estimatedTime: '5 dias', imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Planejamento de Conteúdo', shortDescription: 'Estratégia para crescer.', fullDescription: 'Análise de concorrência e definição de pilares de conteúdo.', categoryId: catMap['Social Media'], type: 'digital', mode: 'fixed', price: 220, estimatedTime: '4 dias', imageUrl: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Bio + Destaques + Ajuste de perfil', shortDescription: 'Primeira impressão profissional.', fullDescription: 'Otimização de bio, criação de capas para destaques e foto.', categoryId: catMap['Social Media'], type: 'digital', mode: 'fixed', price: 90, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // AUTOMAÇÃO
+            { name: 'Automação de WhatsApp', shortDescription: 'Atendimento 24h automático.', fullDescription: 'Respostas automáticas e fluxos de atendimento no Whats.', categoryId: catMap['Automação'], type: 'digital', mode: 'fixed', price: 450, estimatedTime: '5 dias', imageUrl: 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Chatbot básico', shortDescription: 'Triagem automática de clientes.', fullDescription: 'Robô para responder dúvidas frequentes no site ou redes.', categoryId: catMap['Automação'], type: 'digital', mode: 'fixed', price: 600, estimatedTime: '7 dias', imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd05a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Integração com formulários', shortDescription: 'Dados onde você precisa.', fullDescription: 'Conecte seu site com planilhas, CRM ou e-mail.', categoryId: catMap['Automação'], type: 'digital', mode: 'fixed', price: 300, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Resposta automática para leads', shortDescription: 'Não deixe o cliente esperando.', fullDescription: 'Envio imediato de proposta ou boas-vindas após contato.', categoryId: catMap['Automação'], type: 'digital', mode: 'fixed', price: 250, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Automação de atendimento', shortDescription: 'Fluxo completo de vendas.', fullDescription: 'Sistema inteligente que guia o cliente até a compra.', categoryId: catMap['Automação'], type: 'digital', mode: 'fixed', price: 700, estimatedTime: '10 dias', imageUrl: 'https://images.unsplash.com/photo-1531746790731-6c087fecd05a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // FACHADAS DE LOJA
+            { name: 'Projeto de Fachada Simples', shortDescription: 'Visual renovado para sua loja.', fullDescription: 'Projeto visual 2D com sugestões de cores e materiais.', categoryId: catMap['Fachadas de Loja'], type: 'physical', mode: 'fixed', price: 600, estimatedTime: '5 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Fachada Comercial Completa', shortDescription: 'Transformação total da sua marca.', fullDescription: 'Projeto executivo completo para fachadas de grande porte.', categoryId: catMap['Fachadas de Loja'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Fachada com ACM', shortDescription: 'Modernidade e durabilidade.', fullDescription: 'Revestimento em ACM com acabamento premium.', categoryId: catMap['Fachadas de Loja'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Atualização visual de fachada', shortDescription: 'Pequenos ajustes, grande impacto.', fullDescription: 'Pintura, novos adesivos e ajustes na iluminação.', categoryId: catMap['Fachadas de Loja'], type: 'physical', mode: 'fixed', price: 450, estimatedTime: '3 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Fachada com iluminação', shortDescription: 'Destaque sua loja à noite.', fullDescription: 'Projeto e instalação de refletores e fitas LED.', categoryId: catMap['Fachadas de Loja'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // LETREIROS
+            { name: 'Letreiro simples PVC', shortDescription: 'Economia com qualidade.', fullDescription: 'Letras recortadas em PVC expandido com pintura automotiva.', categoryId: catMap['Letreiros'], type: 'physical', mode: 'fixed', price: 350, estimatedTime: '7 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Letreiro em acrílico', shortDescription: 'Brilho e sofisticação.', fullDescription: 'Letras em acrílico com corte a laser de alta precisão.', categoryId: catMap['Letreiros'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Letreiro luminoso', shortDescription: 'Visibilidade total.', fullDescription: 'Letreiro com iluminação interna por LED.', categoryId: catMap['Letreiros'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Letreiro caixa alta', shortDescription: 'Efeito 3D impactante.', fullDescription: 'Letras com profundidade em diversos materiais.', categoryId: catMap['Letreiros'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Letreiro interno decorativo', shortDescription: 'Para recepções e escritórios.', fullDescription: 'Letreiros delicados para ambientes internos.', categoryId: catMap['Letreiros'], type: 'physical', mode: 'fixed', price: 280, estimatedTime: '5 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // ADESIVAÇÃO
+            { name: 'Adesivação de vitrine', shortDescription: 'Atraia quem passa na rua.', fullDescription: 'Aplicação de adesivos promocionais ou decorativos em vidros.', categoryId: catMap['Adesivação'], type: 'physical', mode: 'fixed', price: 250, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Adesivação de balcão', shortDescription: 'Personalize seu atendimento.', fullDescription: 'Revestimento de balcões com adesivo vinílico.', categoryId: catMap['Adesivação'], type: 'physical', mode: 'fixed', price: 180, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Adesivo perfurado', shortDescription: 'Privacidade e propaganda.', fullDescription: 'Ideal para vidros traseiros de carros ou vitrines.', categoryId: catMap['Adesivação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Envelopamento parcial', shortDescription: 'Destaque sua frota.', fullDescription: 'Aplicação de adesivos em partes estratégicas do veículo.', categoryId: catMap['Adesivação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Adesivo promocional para loja', shortDescription: 'Anuncie ofertas rapidamente.', fullDescription: 'Adesivos de fácil aplicação e remoção.', categoryId: catMap['Adesivação'], type: 'physical', mode: 'fixed', price: 150, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1541829070764-84a7d30dee62?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // REFORMAS
+            { name: 'Reforma comercial simples', shortDescription: 'Pequenos reparos em lojas.', fullDescription: 'Ajustes rápidos para manter seu comércio funcionando.', categoryId: catMap['Reformas'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Ajuste de acabamento', shortDescription: 'Detalhes que fazem diferença.', fullDescription: 'Correção de rodapés, molduras e pequenos detalhes.', categoryId: catMap['Reformas'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Reforma interna parcial', shortDescription: 'Renove um ambiente específico.', fullDescription: 'Foco em um cômodo ou área da sua loja.', categoryId: catMap['Reformas'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Reforma de sala comercial', shortDescription: 'Prepare seu novo escritório.', fullDescription: 'Divisórias, pintura e adequação de espaço.', categoryId: catMap['Reformas'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Pequenas correções estruturais', shortDescription: 'Segurança em primeiro lugar.', fullDescription: 'Reparos em rachaduras e infiltrações leves.', categoryId: catMap['Reformas'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // PINTURA
+            { name: 'Pintura de fachada comercial', shortDescription: 'Destaque seu negócio.', fullDescription: 'Pintura externa com tintas resistentes ao sol e chuva.', categoryId: catMap['Pintura'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Pintura interna de loja', shortDescription: 'Ambiente novo para clientes.', fullDescription: 'Pintura rápida e limpa para não atrapalhar suas vendas.', categoryId: catMap['Pintura'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Pintura decorativa', shortDescription: 'Estilo e personalidade.', fullDescription: 'Texturas, cimento queimado e outras técnicas.', categoryId: catMap['Pintura'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Repintura rápida', shortDescription: 'Renovação express.', fullDescription: 'Ideal para entrega de imóveis ou mudanças rápidas.', categoryId: catMap['Pintura'], type: 'physical', mode: 'fixed', price: 300, estimatedTime: '2 dias', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Pintura de parede específica', shortDescription: 'Destaque um ambiente.', fullDescription: 'Pintura de uma única parede com cor diferenciada.', categoryId: catMap['Pintura'], type: 'physical', mode: 'fixed', price: 180, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1589939705384-5185138a047a?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // ELÉTRICA
+            { name: 'Instalação de tomada', shortDescription: 'Mais praticidade no dia a dia.', fullDescription: 'Instalação ou troca de tomadas e interruptores.', categoryId: catMap['Elétrica'], type: 'physical', mode: 'fixed', price: 120, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Troca de disjuntor', shortDescription: 'Segurança para sua rede.', fullDescription: 'Substituição de disjuntores danificados ou antigos.', categoryId: catMap['Elétrica'], type: 'physical', mode: 'fixed', price: 150, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Revisão elétrica básica', shortDescription: 'Evite problemas futuros.', fullDescription: 'Check-up geral na fiação e quadro de energia.', categoryId: catMap['Elétrica'], type: 'physical', mode: 'fixed', price: 220, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Instalação de iluminação comercial', shortDescription: 'Luz certa para vender mais.', fullDescription: 'Instalação de trilhos, spots e luminárias.', categoryId: catMap['Elétrica'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Correção de falha elétrica', shortDescription: 'Resolva curtos e quedas.', fullDescription: 'Diagnóstico e reparo de problemas elétricos urgentes.', categoryId: catMap['Elétrica'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // INSTALAÇÃO
+            { name: 'Instalação de placa comercial', shortDescription: 'Sua marca visível.', fullDescription: 'Fixação segura de placas em fachadas ou paredes.', categoryId: catMap['Instalação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Instalação de letreiro', shortDescription: 'Montagem profissional.', fullDescription: 'Instalação de letras caixa ou letreiros luminosos.', categoryId: catMap['Instalação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Instalação de suporte e estrutura', shortDescription: 'Base sólida para sua marca.', fullDescription: 'Montagem de estruturas metálicas para comunicação visual.', categoryId: catMap['Instalação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Montagem simples em loja', shortDescription: 'Ajustes rápidos de PDV.', fullDescription: 'Instalação de displays, prateleiras e elementos visuais.', categoryId: catMap['Instalação'], type: 'physical', mode: 'fixed', price: 250, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Instalação de comunicação visual', shortDescription: 'Tudo no lugar certo.', fullDescription: 'Serviço completo de instalação de adesivos, placas e banners.', categoryId: catMap['Instalação'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+
+            // ASSISTÊNCIA TÉCNICA
+            { name: 'Visita técnica', shortDescription: 'Avaliação presencial.', fullDescription: 'Deslocamento e diagnóstico inicial do problema.', categoryId: catMap['Assistência Técnica'], type: 'physical', mode: 'fixed', price: 100, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Diagnóstico técnico', shortDescription: 'Entenda o que precisa ser feito.', fullDescription: 'Análise detalhada com emissão de laudo e orçamento.', categoryId: catMap['Assistência Técnica'], type: 'physical', mode: 'fixed', price: 120, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Manutenção preventiva', shortDescription: 'Evite paradas inesperadas.', fullDescription: 'Limpeza e ajustes periódicos em seus equipamentos.', categoryId: catMap['Assistência Técnica'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Suporte técnico local', shortDescription: 'Ajuda quando você precisa.', fullDescription: 'Atendimento presencial para resolução de falhas.', categoryId: catMap['Assistência Técnica'], type: 'physical', mode: 'quote', price: 0, estimatedTime: 'Sob consulta', imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
+            { name: 'Ajuste e reparo simples', shortDescription: 'Conserto rápido.', fullDescription: 'Reparos que não exigem troca de peças complexas.', categoryId: catMap['Assistência Técnica'], type: 'physical', mode: 'fixed', price: 150, estimatedTime: '1 dia', imageUrl: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800', active: true, createdAt: serverTimestamp() },
           ];
 
           for (const ser of initialServices) {
             await addDoc(collection(db, 'services'), ser);
+          }
+        }
+
+        // Add initial coupons
+        const coupSnap = await getDocs(collection(db, 'coupons'));
+        if (coupSnap.empty) {
+          const catDocs = await getDocs(collection(db, 'categories'));
+          const catMap: Record<string, string> = {};
+          catDocs.forEach(doc => catMap[doc.data().name] = doc.id);
+
+          const serDocs = await getDocs(collection(db, 'services'));
+          const serMap: Record<string, string> = {};
+          serDocs.forEach(doc => serMap[doc.data().name] = doc.id);
+
+          const initialCoupons = [
+            { code: 'BEMVINDO10', description: '10% de desconto na primeira contratação', discountType: 'percentage', discountValue: 10, appliesToCategory: null, appliesToService: null, minimumOrderValue: 0, usageLimit: 100, usedCount: 0, expiresAt: '2026-12-31', active: true, createdAt: serverTimestamp() },
+            { code: 'SITE100', description: 'R$ 100 de desconto em serviços de Criação de Sites', discountType: 'fixed', discountValue: 100, appliesToCategory: catMap['Criação de Sites'], appliesToService: null, minimumOrderValue: 500, usageLimit: 50, usedCount: 0, expiresAt: '2026-12-31', active: true, createdAt: serverTimestamp() },
+            { code: 'LOGO20', description: '20% de desconto em Criação de Logo', discountType: 'percentage', discountValue: 20, appliesToCategory: null, appliesToService: serMap['Criação de Logo'], minimumOrderValue: 0, usageLimit: 30, usedCount: 0, expiresAt: '2026-12-31', active: true, createdAt: serverTimestamp() },
+            { code: 'LOJA15', description: '15% de desconto em Fachadas de Loja', discountType: 'percentage', discountValue: 15, appliesToCategory: catMap['Fachadas de Loja'], appliesToService: null, minimumOrderValue: 0, usageLimit: 20, usedCount: 0, expiresAt: '2026-12-31', active: true, createdAt: serverTimestamp() },
+            { code: 'DIGITAL50', description: 'R$ 50 de desconto para pedidos acima de R$ 300 em serviços digitais', discountType: 'fixed', discountValue: 50, appliesToCategory: null, appliesToService: null, minimumOrderValue: 300, usageLimit: 100, usedCount: 0, expiresAt: '2026-12-31', active: true, createdAt: serverTimestamp() },
+          ];
+
+          for (const coup of initialCoupons) {
+            await addDoc(collection(db, 'coupons'), coup);
           }
         }
       }
@@ -305,6 +254,7 @@ export default function App() {
             <Route path="categories" element={<AdminCategories />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="chats" element={<AdminChats />} />
+            <Route path="coupons" element={<AdminCoupons />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
